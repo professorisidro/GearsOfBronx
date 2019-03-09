@@ -1,23 +1,20 @@
 package br.edu.ufabc.meuprimeirojogo.core;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.assets.loaders.ModelLoader;
 import com.badlogic.gdx.assets.loaders.ModelLoader.ModelParameters;
-import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.Model;
-import com.badlogic.gdx.graphics.g3d.attributes.BlendingAttribute;
-import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
-import com.badlogic.gdx.graphics.g3d.attributes.IntAttribute;
 import com.badlogic.gdx.graphics.g3d.loader.G3dModelLoader;
-import com.badlogic.gdx.graphics.g3d.model.Node;
-import com.badlogic.gdx.graphics.g3d.model.data.ModelMaterial.MaterialType;
-import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.UBJsonReader;
+
+import br.edu.ufabc.meuprimeirojogo.model.Ryu;
 
 public class GameAction {
 	
 	protected Array<GameObject> objects;
+	protected Ryu ryu;
 	
 	public GameAction() {
 		objects = new Array<GameObject>();
@@ -34,28 +31,8 @@ public class GameAction {
 		Model mDie     = loader.loadModel(Gdx.files.internal("ryu/ryu_die.g3db"));
 		//objects.add(new GameObject(mCenario, false));
 		
-		GameObject die = new GameObject(mDie);
-		//die.transform.translate(3, 0, 3);
-		objects.add(die);
-		System.out.println("adicionei DIE");
-		for (Material m: die.materials) {
-			m.remove(BlendingAttribute.Type);
-		}
-		GameObject idle = new GameObject(mIdle);
-		idle.transform.translate(-3,0,3);
-		objects.add(idle);
-		for (Material m: idle.materials) {
-			m.remove(BlendingAttribute.Type);
-		}
-		System.out.println("adicionei IDLE");
-		GameObject punch = new GameObject(mPunch);
-		punch.transform.translate(3,0,-3);
-		for (Material m: punch.materials) {
-			m.remove(BlendingAttribute.Type);
-		}
-		objects.add(punch);
+		ryu = new Ryu();
 		
-		System.out.println("adicionei PUNCH");
 		// para fins de debug
 //		GameObject cenario = objects.first();
 //	    Vector3 position = new Vector3();
@@ -97,6 +74,19 @@ public class GameAction {
 	public void update(float delta) {
 		for (GameObject o: objects) {
 			o.update(delta);
+		}
+		ryu.update(delta);
+		if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
+			System.out.println("Porrada");
+			ryu.punch();
+		}
+		if (Gdx.input.isKeyJustPressed(Input.Keys.D)) {
+			System.out.println("Morreu");
+			ryu.die();
+		}
+		if (Gdx.input.isKeyJustPressed(Input.Keys.I)) {
+			System.out.println("voltou");
+			ryu.idle();
 		}
 		
 	}

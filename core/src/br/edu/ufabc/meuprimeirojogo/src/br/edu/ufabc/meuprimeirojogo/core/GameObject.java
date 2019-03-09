@@ -23,8 +23,9 @@ public class GameObject extends ModelInstance{
 	}
 	public GameObject(Model model, boolean visible, boolean animated, boolean looped, float loopSpeed) {
 		this(model, visible);
+		this.animated = animated;
+		controller = new AnimationController(this);
 		if (animated) {
-			controller = new AnimationController(this);
 			controller.setAnimation(this.animations.first().id, (looped)? -1: 1, loopSpeed, 
 					new AnimationListener() {
 
@@ -45,8 +46,10 @@ public class GameObject extends ModelInstance{
 	}
 	
 	public void update(float delta) {
-		if (animated)
+		if (animated) {
 		   controller.update(delta);
+	   
+		}
 		
 	}
 	public boolean isVisible() {

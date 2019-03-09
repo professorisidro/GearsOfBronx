@@ -41,6 +41,7 @@ public class Renderer {
 		for (GameObject o: gameAction.objects) {
 			if (o.isVisible()) modelBatch.render(o, environment);
 		}
+		modelBatch.render(gameAction.ryu.getCurrent(), environment);
 		modelBatch.end();
 		camera.update();
 	}
