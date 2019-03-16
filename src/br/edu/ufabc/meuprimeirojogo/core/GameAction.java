@@ -2,50 +2,48 @@ package br.edu.ufabc.meuprimeirojogo.core;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.assets.loaders.ModelLoader;
-import com.badlogic.gdx.assets.loaders.ModelLoader.ModelParameters;
-import com.badlogic.gdx.graphics.g3d.Model;
-import com.badlogic.gdx.graphics.g3d.loader.G3dModelLoader;
+import com.badlogic.gdx.graphics.g3d.Material;
+import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
+import com.badlogic.gdx.graphics.g3d.model.Node;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.UBJsonReader;
 
 import br.edu.ufabc.meuprimeirojogo.MeuJogo;
-import br.edu.ufabc.meuprimeirojogo.model.Ryu;
+import br.edu.ufabc.meuprimeirojogo.model.AbstractModel;
+import br.edu.ufabc.meuprimeirojogo.model.Chao;
+import br.edu.ufabc.meuprimeirojogo.model.LixoAndante;
+import br.edu.ufabc.meuprimeirojogo.model.Poste;
 
 public class GameAction {
 	
-	protected Array<GameObject> objects;
-	protected Ryu ryu;
+	protected Array<AbstractModel> objects;
+	private AbstractModel lixo;
+	protected String      colidiu;
+	
 	
 	public GameAction() {
-		objects = new Array<GameObject>();
+		objects = new Array<AbstractModel>();
 		// vou carregar os modelos aqui (inicialmente)
-//		ModelLoader<ModelParameters> loader;
-//		loader = new G3dModelLoader(new UBJsonReader());
-		Model mCenario = MeuJogo.assetManager.get("cenario/cenario.g3db");
-		Model mPoste   = MeuJogo.assetManager.get("cenario/poste.g3db");
-		Model mBanco   = MeuJogo.assetManager.get("cenario/banco.g3db");
-		Model mLixo    = MeuJogo.assetManager.get("cenario/lixo.g3db");
-		Model mLixeira = MeuJogo.assetManager.get("cenario/lixeira.g3db");
-		Model mIdle    = MeuJogo.assetManager.get("ryu/ryu_idle.g3db");
-		Model mPunch   = MeuJogo.assetManager.get("ryu/ryu_punch.g3db");
-		Model mDie     = MeuJogo.assetManager.get("ryu/ryu_die.g3db");
-		//objects.add(new GameObject(mCenario, false));
+//		
 		
-		ryu = new Ryu();
+		
+		objects.add(new Chao());
+		
+		
 		
 		// para fins de debug
-//		GameObject cenario = objects.first();
-//	    Vector3 position = new Vector3();
-//		for (Node n: cenario.nodes) {
-//			System.out.println(n.id);
-//			position = n.globalTransform.getTranslation(position);
-//			GameObject object;
-//			if (n.id.contains("poste")) {
-//				object = new GameObject(mPoste, false);
-//				object.transform.setToTranslation(position);
-//				objects.add(object);
-//			}
+		GameObject cenario = objects.first().getGameObject();
+	    Vector3 position = new Vector3();
+		for (Node n: cenario.nodes) {			
+			position = n.globalTransform.getTranslation(position);
+			GameObject object;
+			if (n.id.contains("poste")) {
+				Poste poste = new Poste();
+				poste.getGameObject().transform.setToTranslation(position);
+				poste.getGameObject().updateBoundingBox();
+				objects.add(poste);
+			}
+		}
 //			else if (n.id.contains("lixo")) {
 //				object = new GameObject(mLixo, false);
 //				object.transform.setToTranslation(position);
@@ -62,33 +60,33 @@ public class GameAction {
 //				objects.add(object);
 //			}
 //		}
+		
 //		
-//		for (GameObject o: objects) {
-//			for (Material mat: o.materials) {
-//					mat.remove(ColorAttribute.Emissive);
-//			}
-//		}
+		lixo = new LixoAndante();
+		objects.add(lixo);
+		for (AbstractModel obj: objects) {
+			for (Material mat: obj.getGameObject().materials) {
+					mat.remove(ColorAttribute.Emissive);
+			}
+		}
 		
 		
 	}
 
 	public void update(float delta) {
-		for (GameObject o: objects) {
+		for (AbstractModel o: objects) {
 			o.update(delta);
 		}
-		ryu.update(delta);
-		if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
-			System.out.println("Porrada");
-			ryu.punch();
-		}
-		if (Gdx.input.isKeyJustPressed(Input.Keys.D)) {
-			System.out.println("Morreu");
-			ryu.die();
-		}
-		if (Gdx.input.isKeyJustPressed(Input.Keys.I)) {
-			System.out.println("voltou");
-			ryu.idle();
-		}
 		
+		for (AbstractModel m: objects) {
+			if (m instanceof Poste) {
+				if (m.getGameObject().getBoundingBox().intersects(lixo.getGameObject().getBoundingBox())) {
+					colidiu = "Colisao";
+				}
+				else {
+					colidiu = "Sem colisao";
+				}
+			}
+		}
 	}
 }

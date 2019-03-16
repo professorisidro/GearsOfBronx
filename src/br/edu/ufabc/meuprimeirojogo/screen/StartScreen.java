@@ -36,7 +36,8 @@ public class StartScreen extends MyScreen {
 		bitmapFont = new BitmapFont(Gdx.files.internal("fonts/myfont.fnt"));
 		sounds = Gdx.audio.newMusic(Gdx.files.internal("sounds/loopshot2.mp3"));
 		sounds.setLooping(true);
-		sounds.play();
+		//sounds.play();
+		
 
 	}
 
@@ -83,7 +84,7 @@ public class StartScreen extends MyScreen {
 		if (!stringDone) {
 			bitmapFont.draw(spriteBatch, gameTitle.substring(0, stringIndex), 100, 370);
 			stringTime += Gdx.graphics.getDeltaTime();
-			if (stringTime >= 0.35f) {
+			if (stringTime >= 0.15f) {
 				stringTime = 0;
 				stringIndex++;
 				if (stringIndex >= gameTitle.length()) {
