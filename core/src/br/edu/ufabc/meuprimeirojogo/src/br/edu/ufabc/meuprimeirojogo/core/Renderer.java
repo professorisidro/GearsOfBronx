@@ -10,6 +10,9 @@ import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
 import com.badlogic.gdx.graphics.g3d.utils.CameraInputController;
 
+import br.edu.ufabc.meuprimeirojogo.MeuJogo;
+import br.edu.ufabc.meuprimeirojogo.model.AbstractModel;
+
 public class Renderer {
 	
 	private GameAction        gameAction;
@@ -38,11 +41,16 @@ public class Renderer {
 		Gdx.gl.glClearColor(0, 0, 0, 0);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);		
 		modelBatch.begin(camera);
-		for (GameObject o: gameAction.objects) {
-			if (o.isVisible()) modelBatch.render(o, environment);
+		for (AbstractModel o: gameAction.objects) {
+			if (o.getGameObject().isVisible()) modelBatch.render(o.getGameObject(), environment);
 		}
-		modelBatch.render(gameAction.ryu.getCurrent(), environment);
+		if (MeuJogo.DEBUG) {
+			for (AbstractModel o: gameAction.objects) {
+				modelBatch.render(o.getGameObject().getBoxInstance(), environment);
+			}
+		}
 		modelBatch.end();
+
 		camera.update();
 	}
 }

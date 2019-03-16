@@ -2,49 +2,45 @@ package br.edu.ufabc.meuprimeirojogo.core;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.assets.loaders.ModelLoader;
-import com.badlogic.gdx.assets.loaders.ModelLoader.ModelParameters;
-import com.badlogic.gdx.graphics.g3d.Model;
-import com.badlogic.gdx.graphics.g3d.loader.G3dModelLoader;
+import com.badlogic.gdx.graphics.g3d.Material;
+import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
+import com.badlogic.gdx.graphics.g3d.model.Node;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.UBJsonReader;
 
-import br.edu.ufabc.meuprimeirojogo.model.Ryu;
+import br.edu.ufabc.meuprimeirojogo.MeuJogo;
+import br.edu.ufabc.meuprimeirojogo.model.AbstractModel;
+import br.edu.ufabc.meuprimeirojogo.model.Chao;
+import br.edu.ufabc.meuprimeirojogo.model.Poste;
 
 public class GameAction {
 	
-	protected Array<GameObject> objects;
-	protected Ryu ryu;
+	protected Array<AbstractModel> objects;
+	
 	
 	public GameAction() {
-		objects = new Array<GameObject>();
+		objects = new Array<AbstractModel>();
 		// vou carregar os modelos aqui (inicialmente)
-		ModelLoader<ModelParameters> loader;
-		loader = new G3dModelLoader(new UBJsonReader());
-		Model mCenario = loader.loadModel(Gdx.files.internal("cenario/cenario.g3db"));
-		Model mPoste   = loader.loadModel(Gdx.files.internal("cenario/poste.g3db"));
-		Model mBanco   = loader.loadModel(Gdx.files.internal("cenario/banco.g3db"));
-		Model mLixo    = loader.loadModel(Gdx.files.internal("cenario/lixo.g3db"));
-		Model mLixeira = loader.loadModel(Gdx.files.internal("cenario/lixeira.g3db"));
-		Model mIdle    = loader.loadModel(Gdx.files.internal("ryu/ryu_idle.g3db"));
-		Model mPunch   = loader.loadModel(Gdx.files.internal("ryu/ryu_punch.g3db"));
-		Model mDie     = loader.loadModel(Gdx.files.internal("ryu/ryu_die.g3db"));
-		//objects.add(new GameObject(mCenario, false));
+//		
 		
-		ryu = new Ryu();
+		
+		objects.add(new Chao());
+		
+		
 		
 		// para fins de debug
-//		GameObject cenario = objects.first();
-//	    Vector3 position = new Vector3();
-//		for (Node n: cenario.nodes) {
-//			System.out.println(n.id);
-//			position = n.globalTransform.getTranslation(position);
-//			GameObject object;
-//			if (n.id.contains("poste")) {
-//				object = new GameObject(mPoste, false);
-//				object.transform.setToTranslation(position);
-//				objects.add(object);
-//			}
+		GameObject cenario = objects.first().getGameObject();
+	    Vector3 position = new Vector3();
+		for (Node n: cenario.nodes) {
+			System.out.println(n.id);
+			position = n.globalTransform.getTranslation(position);
+			GameObject object;
+			if (n.id.contains("poste")) {
+				Poste poste = new Poste();
+				poste.getGameObject().transform.setToTranslation(position);
+				objects.add(poste);
+			}
+		}
 //			else if (n.id.contains("lixo")) {
 //				object = new GameObject(mLixo, false);
 //				object.transform.setToTranslation(position);
@@ -62,32 +58,24 @@ public class GameAction {
 //			}
 //		}
 //		
-//		for (GameObject o: objects) {
-//			for (Material mat: o.materials) {
-//					mat.remove(ColorAttribute.Emissive);
-//			}
-//		}
+		for (AbstractModel obj: objects) {
+			for (Material mat: obj.getGameObject().materials) {
+					mat.remove(ColorAttribute.Emissive);
+			}
+		}
 		
 		
 	}
 
 	public void update(float delta) {
-		for (GameObject o: objects) {
+		for (AbstractModel o: objects) {
 			o.update(delta);
 		}
-		ryu.update(delta);
-		if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
-			System.out.println("Porrada");
-			ryu.punch();
-		}
 		if (Gdx.input.isKeyJustPressed(Input.Keys.D)) {
-			System.out.println("Morreu");
-			ryu.die();
+			MeuJogo.DEBUG = !MeuJogo.DEBUG;
 		}
-		if (Gdx.input.isKeyJustPressed(Input.Keys.I)) {
-			System.out.println("voltou");
-			ryu.idle();
-		}
+		
+		
 		
 	}
 }

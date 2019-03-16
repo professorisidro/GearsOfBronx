@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.g3d.attributes.BlendingAttribute;
 import com.badlogic.gdx.graphics.g3d.loader.G3dModelLoader;
 import com.badlogic.gdx.utils.UBJsonReader;
 
+import br.edu.ufabc.meuprimeirojogo.MeuJogo;
 import br.edu.ufabc.meuprimeirojogo.core.GameObject;
 
 public class Ryu {
@@ -21,12 +22,12 @@ public class Ryu {
 	public Ryu() {
 		estados = new GameObject[3];
 		estado = IDLE;
-		ModelLoader<ModelParameters> loader;
-		loader = new G3dModelLoader(new UBJsonReader());
+//		ModelLoader<ModelParameters> loader;
+//		loader = new G3dModelLoader(new UBJsonReader());
 		
-		Model mIdle  = loader.loadModel(Gdx.files.internal("ryu/ryu_idle.g3db"));
-		Model mPunch = loader.loadModel(Gdx.files.internal("ryu/ryu_punch.g3db"));
-		Model mDie   = loader.loadModel(Gdx.files.internal("ryu/ryu_die.g3db"));
+		Model mIdle  = MeuJogo.assetManager.get("ryu/ryu_idle.g3db");
+		Model mPunch = MeuJogo.assetManager.get("ryu/ryu_punch.g3db");
+		Model mDie   = MeuJogo.assetManager.get("ryu/ryu_die.g3db");
 		
 		estados[IDLE]  = new GameObject(mIdle, true, true, true, 1);
 		estados[PUNCH] = new GameObject(mPunch, true, true, true, 1);
