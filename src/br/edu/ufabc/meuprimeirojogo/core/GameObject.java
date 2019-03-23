@@ -22,6 +22,11 @@ public class GameObject extends ModelInstance{
 	private boolean animationFinished;
 	private AnimationController controller;
 	private BoundingBox         boundingBox;
+	private Vector3				minOriginal;
+	private Vector3				maxOriginal;
+	private Vector3             ctrOriginal;
+	private float               angle;
+	
 	/* for debug */
 	private ModelInstance       boxInstance;
 	private Vector3             position;
@@ -34,14 +39,16 @@ public class GameObject extends ModelInstance{
 		calculateBoundingBox(boundingBox);
 		//System.out.println("Bounding Box = "+boundingBox);
 		// for debug reasons
-		Vector3 boxMax = new Vector3();
-		Vector3 boxMin = new Vector3();
-		boundingBox.getMax(boxMax);
-		boundingBox.getMin(boxMin);
+		minOriginal = new Vector3();
+		maxOriginal = new Vector3();
+		ctrOriginal = new Vector3();
+		boundingBox.getMax(minOriginal);
+		boundingBox.getMin(maxOriginal);
+		boundingBox.getCenter(ctrOriginal);
 		boxInstance = new ModelInstance(MeuJogo.modelBuider.createBox(
-				(Math.abs(boxMax.x)+Math.abs(boxMin.x)), 
-				(Math.abs(boxMax.y)+Math.abs(boxMin.y)), 
-				(Math.abs(boxMax.z)+Math.abs(boxMin.z)), 
+				(Math.abs(maxOriginal.x)+Math.abs(minOriginal.x)), 
+				(Math.abs(maxOriginal.y)+Math.abs(minOriginal.y)), 
+				(Math.abs(maxOriginal.z)+Math.abs(minOriginal.z)), 
                 new Material(ColorAttribute.createDiffuse(Color.LIGHT_GRAY)),
                 Usage.Position | Usage.Normal));
 		BlendingAttribute bl = new BlendingAttribute(GL20.GL_SRC_ALPHA 
@@ -82,14 +89,11 @@ public class GameObject extends ModelInstance{
 	
 	public void updateBoundingBox() {
 		this.transform.getTranslation(position);
+		boundingBox.set(position.cpy().add(minOriginal), 
+				        position.cpy().add(maxOriginal));
+		ctrOriginal.add(position.cpy());
 		
-//		Vector3 boxMax = new Vector3();
-//		Vector3 boxMin = new Vector3();
-//		boundingBox.getMax(boxMax);
-//		boundingBox.getMin(boxMin);
-		boundingBox.max.add(position);
-		boundingBox.min.add(position);
-		position.y = (boundingBox.getHeight()/2);
+		position.y = (boundingBox.getHeight()/2);  	    
 		boxInstance.transform.setToTranslation(position);
 	}
 	
@@ -114,12 +118,29 @@ public class GameObject extends ModelInstance{
 		animationFinished = false;		
 	}
 	
+	
+	public float getAngle() {
+		return angle;
+	}
+	public void setAngle(float angle) {
+		this.angle += angle;
+	}
 	public BoundingBox getBoundingBox() {
 		return boundingBox;
 	}
 	
 	public ModelInstance getBoxInstance() {
 		return boxInstance;
+	}
+	
+	public void updateBoxScale(float scale) {
+		minOriginal.scl(scale);
+		maxOriginal.scl(scale);
+	}
+	
+	public void updateBoxScale(float scaleX, float scaleY, float scaleZ) {
+	    minOriginal.scl(scaleX, scaleY, scaleZ);
+	    maxOriginal.scl(scaleX, scaleY, scaleZ);
 	}
 	
 	

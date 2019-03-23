@@ -1,6 +1,7 @@
 package br.edu.ufabc.meuprimeirojogo.model;
 
 import com.badlogic.gdx.graphics.g3d.Model;
+import com.badlogic.gdx.math.Vector3;
 
 import br.edu.ufabc.meuprimeirojogo.Commands;
 import br.edu.ufabc.meuprimeirojogo.MeuJogo;
@@ -16,7 +17,8 @@ public class LixoAndante extends AbstractModel {
 	public static final int TRAS    =-1;
 	public static final int DIREITA = 2;
 	public static final int ESQUERDA=-2;
-	public float  step = 2;
+	public float  step = 3;
+	public float  angulo = 40;
 	
 	public LixoAndante() {
 		super(true, true);
@@ -33,13 +35,30 @@ public class LixoAndante extends AbstractModel {
 			lixo.transform.translate(0,0,-step*delta);
 		}
 		if (Commands.set[Commands.LEFT]) {
-			lixo.transform.translate(step*delta,0,0);
+			lixo.transform.rotate(Vector3.Y, angulo*delta);
+			lixo.setAngle(angulo*delta);
 		}
 		if (Commands.set[Commands.RIGHT]) {
-			lixo.transform.translate(-step*delta, 0, 0);
+			lixo.transform.rotate(Vector3.Y,-angulo*delta);
+			lixo.setAngle(-angulo*delta);
 		}
 		lixo.update(delta);
-		lixo.updateBoundingBox();
+		if (isMoveable())
+    		lixo.updateBoundingBox();
+		
+	}
+	
+	public void stepBack(float delta) {
+		if (Commands.set[Commands.UP]) {
+			lixo.transform.translate(0,0,-step*delta);
+		}
+		if (Commands.set[Commands.DOWN]) {
+			lixo.transform.translate(0,0,step*delta);
+		}
+		
+		lixo.update(delta);
+		if (isMoveable())
+    		lixo.updateBoundingBox();
 		
 	}
 

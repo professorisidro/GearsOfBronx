@@ -13,39 +13,53 @@ import com.badlogic.gdx.graphics.g3d.utils.CameraInputController;
 import com.badlogic.gdx.math.Matrix4;
 
 import br.edu.ufabc.meuprimeirojogo.Commands;
+import br.edu.ufabc.meuprimeirojogo.MeuJogo;
 import br.edu.ufabc.meuprimeirojogo.model.AbstractModel;
+import br.edu.ufabc.meuprimeirojogo.model.LixoAndante;
+import br.edu.ufabc.meuprimeirojogo.model.Poste;
+import br.edu.ufabc.meuprimeirojogo.util.Button;
+import br.edu.ufabc.meuprimeirojogo.util.ChasingCamera;
 
 public class Renderer {
-	
-	private GameAction        gameAction;
-	private Environment       environment;
-	private ModelBatch        modelBatch;
-	private PerspectiveCamera camera;
+
+	private GameAction gameAction;
+	private Environment environment;
+	private ModelBatch modelBatch;
+//	private PerspectiveCamera camera;
+	private ChasingCamera camera;
 	private CameraInputController input;
-	private SpriteBatch      spritebatch;
-	private BitmapFont       bmp;
-	private Matrix4          viewMatrix;
-	private Matrix4          tranMatrix;
-	
-	
+	private SpriteBatch spritebatch;
+	private BitmapFont bmp;
+	private Matrix4 viewMatrix;
+	private Matrix4 tranMatrix;
+
 	public Renderer(GameAction action) {
 		this.gameAction = action;
-		modelBatch  = new ModelBatch();
+		modelBatch = new ModelBatch();
 		environment = new Environment();
-		environment.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.6f, 0.6f, 0.6f,0));
-		environment.add(new DirectionalLight().set(0.8f, 0.8f, 0.8f,-0.2f, -0.8f, 1));
-		camera = new PerspectiveCamera(67.0f, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-		camera.far  = 300f;
-		camera.position.set(0, 5, 10);
-		camera.lookAt(0,5,0);
-	    camera.update();
-	    input = new CameraInputController(camera);
-	    //Gdx.input.setInputProcessor(input);
-	    spritebatch = new SpriteBatch();
-	    bmp = new BitmapFont(Gdx.files.internal("fonts/myfont.fnt"));
-	    bmp.getData().setScale(0.5f);
-	    viewMatrix = new Matrix4();
-	    tranMatrix = new Matrix4();
+		environment.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.3f, 0.3f, 0.3f, 0));
+
+//		environment.add(new DirectionalLight().set(0.8f, 0.8f, 0.8f, -0.2f, -0.8f, 1));
+		for (AbstractModel m : action.objects) {
+			if (m instanceof Poste) {
+				environment.add(((Poste) m).posteLight());
+			}
+		}
+		camera = new ChasingCamera(67.0f, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), 2, -7);
+		camera.far = 300f;
+		// considerando que o lixo está na posição 0
+
+//		camera.position.set(0, 5,5);
+//		camera.lookAt(0,5,10);
+		camera.update();
+		// input = new CameraInputController(camera);
+		// Gdx.input.setInputProcessor(input);
+		spritebatch = new SpriteBatch();
+		bmp = new BitmapFont(Gdx.files.internal("fonts/myfont.fnt"));
+		bmp.getData().setScale(0.5f);
+		viewMatrix = new Matrix4();
+		tranMatrix = new Matrix4();
+		camera.setObjectToFollow(gameAction.lixo.getGameObject());
 	}
 
 	public void draw(float delta) {
@@ -55,22 +69,33 @@ public class Renderer {
 		viewMatrix.setToOrtho2D(0, 0, 800, 600);
 		spritebatch.setProjectionMatrix(viewMatrix);
 		spritebatch.setTransformMatrix(tranMatrix);
-		
+
 		modelBatch.begin(camera);
-		for (AbstractModel o: gameAction.objects) {
-			if (o.getGameObject().isVisible()) modelBatch.render(o.getGameObject(), environment);
+		for (AbstractModel o : gameAction.objects) {
+			if (o.getGameObject().isVisible())
+				modelBatch.render(o.getGameObject(), environment);
 		}
 		if (Commands.set[Commands.DEBUG]) {
-			for (AbstractModel o: gameAction.objects) {
+			for (AbstractModel o : gameAction.objects) {
 				modelBatch.render(o.getGameObject().getBoxInstance(), environment);
 			}
 		}
 		modelBatch.end();
-		spritebatch.begin();
-		bmp.draw(spritebatch, gameAction.colidiu, 50,450);
-		spritebatch.end();
-		
-
 		camera.update();
+		spritebatch.begin();
+		bmp.draw(spritebatch, gameAction.colidiu, 50, 450);
+		for (Button button : MeuJogo.gamePad.getButtons()) {
+			spritebatch.draw(button.getTexture(), button.getPosX(), button.getPosY());
+		}
+		spritebatch.end();
+
+		if (Commands.set[Commands.SHOT]) {
+			camera.setOffsetZ(-2);
+			camera.setOffsetY(1);
+		} else {
+			camera.setOffsetZ(-7);
+			camera.setOffsetY(2);
+		}
+
 	}
 }

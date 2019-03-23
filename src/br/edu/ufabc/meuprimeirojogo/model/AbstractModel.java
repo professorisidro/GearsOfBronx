@@ -26,6 +26,13 @@ public abstract class AbstractModel {
 	public void setMoveable(boolean moveable) {
 		this.moveable = moveable;
 	}
+	
+	public boolean collidesWith(AbstractModel other) {
+		return this.getGameObject()
+				   .getBoundingBox()
+				   .intersects(other.getGameObject()
+						            .getBoundingBox());
+	}
 
 	
 	

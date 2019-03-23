@@ -1,6 +1,7 @@
 package br.edu.ufabc.meuprimeirojogo;
 
-import javax.print.DocFlavor.INPUT_STREAM;
+
+import javax.swing.plaf.synth.SynthSeparatorUI;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
@@ -9,10 +10,13 @@ import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
+import com.badlogic.gdx.math.Vector3;
 
 import br.edu.ufabc.meuprimeirojogo.screen.GameScreen;
 import br.edu.ufabc.meuprimeirojogo.screen.MyScreen;
 import br.edu.ufabc.meuprimeirojogo.screen.StartScreen;
+import br.edu.ufabc.meuprimeirojogo.util.GamePad;
+import br.edu.ufabc.meuprimeirojogo.util.Utilities;
 
 public class MeuJogo extends Game implements InputProcessor {
 
@@ -20,12 +24,14 @@ public class MeuJogo extends Game implements InputProcessor {
 	public static AssetManager assetManager;
 	public static ModelBuilder modelBuider;
 	public static boolean DEBUG = false;
+	public static GamePad gamePad;
 
 	@Override
 	public void create() {
 		// TODO Auto-generated method stub
 		modelBuider = new ModelBuilder();
 		assetManager = new AssetManager();
+		gamePad      = new GamePad(true);
 		Gdx.input.setInputProcessor(this);
 
 		assetManager.load("cenario/banco.g3db", Model.class);
@@ -128,12 +134,21 @@ public class MeuJogo extends Game implements InputProcessor {
 	@Override
 	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
 		// TODO Auto-generated method stub
+	    if (gamePad.buttonTouched(Utilities.convertCoordinates(screenX, screenY)) == GamePad.UP) {
+	       Commands.set[Commands.UP] = true;
+	       return true;
+	    }
+	
 		return false;
 	}
 
 	@Override
 	public boolean touchUp(int screenX, int screenY, int pointer, int button) {
 		// TODO Auto-generated method stub
+		if (gamePad.buttonTouched(Utilities.convertCoordinates(screenX, screenY)) == GamePad.UP) {
+		       Commands.set[Commands.UP] = false;
+		       return true;
+		    }
 		return false;
 	}
 

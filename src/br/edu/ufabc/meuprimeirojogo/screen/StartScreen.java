@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Matrix4;
 
 import br.edu.ufabc.meuprimeirojogo.MeuJogo;
+import br.edu.ufabc.meuprimeirojogo.util.Utilities;
 
 public class StartScreen extends MyScreen {
 
@@ -71,12 +72,12 @@ public class StartScreen extends MyScreen {
 		Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		// define que vou usar a cor preta (0,0,0,0)
 		Gdx.gl20.glClearColor(0, 0, 0, 0);
-		viewMatrix.setToOrtho2D(0, 0, 800, 600); // defino a "configuração da resolução"
+		viewMatrix.setToOrtho2D(0, 0, Utilities.GAME_WIDTH, Utilities.GAME_HEIGHT); // defino a "configuração da resolução"
 		spriteBatch.setProjectionMatrix(viewMatrix); // buffer irá seguir essa configuração
 		spriteBatch.setTransformMatrix(tranMatrix); // toda vez q redimensionar a tela, armazene as distorçoes na matriz
 
 		spriteBatch.begin();
-		spriteBatch.draw(texture, 0, 0, 800, 600, 0, 0, 800, 600, false, false);
+		spriteBatch.draw(texture, 0, 0, Utilities.GAME_WIDTH, Utilities.GAME_HEIGHT, 0, 0, 800, 600, false, false);
 		/*
 		 * Logica para escrever estilo typewriter
 		 */
