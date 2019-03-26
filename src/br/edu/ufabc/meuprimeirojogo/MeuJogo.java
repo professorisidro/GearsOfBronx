@@ -39,9 +39,12 @@ public class MeuJogo extends Game implements InputProcessor {
 		assetManager.load("cenario/lixeira.g3db", Model.class);
 		assetManager.load("cenario/cenario.g3db", Model.class);
 		assetManager.load("cenario/poste.g3db", Model.class);
-		assetManager.load("ryu/ryu_idle.g3db", Model.class);
-		assetManager.load("ryu/ryu_punch.g3db", Model.class);
-		assetManager.load("ryu/ryu_die.g3db", Model.class);
+		assetManager.load("robot/Robot_idle.g3db", Model.class);
+		assetManager.load("robot/Robot_death.g3db", Model.class);
+		assetManager.load("robot/Robot_run.g3db", Model.class);
+		assetManager.load("robot/Robot_OneShoot.g3db", Model.class);
+		
+		
 		currentScreen = new StartScreen("START");
 		setScreen(currentScreen);
 

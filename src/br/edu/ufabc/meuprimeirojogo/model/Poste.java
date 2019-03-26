@@ -22,6 +22,8 @@ public class Poste extends AbstractModel {
 		super(true,false);
 		this.mode = mode;
 		modelPoste = new GameObject((Model)MeuJogo.assetManager.get("cenario/poste.g3db"));
+		modelPoste.updateBoxScale(0.7f, 1, 0.7f);
+		
 	}
 
 	@Override

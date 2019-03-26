@@ -1,6 +1,7 @@
 package br.edu.ufabc.meuprimeirojogo.util;
 
 import com.badlogic.gdx.graphics.PerspectiveCamera;
+import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.Vector3;
 
 import br.edu.ufabc.meuprimeirojogo.core.GameObject;
@@ -8,8 +9,8 @@ import br.edu.ufabc.meuprimeirojogo.core.GameObject;
 public class ChasingCamera extends PerspectiveCamera {
 	private GameObject objectToFollow;
 	private Vector3 objectPosition;
-	private float offsetZ = -5;
-	private float offsetY = 1;
+	private float offsetZ = -2;
+	private float offsetY = 1.5f;
 
 	public ChasingCamera(float fov, float width, float height, float offsetY, float offsetZ) {
 		super(fov, width, height);
@@ -52,7 +53,11 @@ public class ChasingCamera extends PerspectiveCamera {
 			float newX = objectPosition.x + (float)(offsetZ*Math.sin(Math.toRadians(angulo)));
 			float newY = objectPosition.y + offsetY;
 			float newZ = objectPosition.z + (float)(offsetZ*Math.cos(Math.toRadians(angulo)));
-			this.position.set(newX, newY, newZ);
+			
+	        Vector3 currentPosition = this.position;
+	        Vector3 newPosition     = new Vector3(newX, newY, newZ);
+	        
+			this.position.set(currentPosition.interpolate(newPosition, 0.5f, Interpolation.linear));
 			this.lookAt(objectPosition.x, newY, objectPosition.z);
 		}
 		super.update();

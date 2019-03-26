@@ -39,13 +39,13 @@ public class Renderer {
 		environment = new Environment();
 		environment.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.3f, 0.3f, 0.3f, 0));
 
-//		environment.add(new DirectionalLight().set(0.8f, 0.8f, 0.8f, -0.2f, -0.8f, 1));
+		environment.add(new DirectionalLight().set(0.8f, 0.8f, 0.8f, -0.2f, -0.8f, 1));
 		for (AbstractModel m : action.objects) {
 			if (m instanceof Poste) {
 				environment.add(((Poste) m).posteLight());
 			}
 		}
-		camera = new ChasingCamera(67.0f, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), 2, -7);
+		camera = new ChasingCamera(67.0f, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), 1.5f, -2.5f);
 		camera.far = 300f;
 		// considerando que o lixo está na posição 0
 
@@ -59,7 +59,7 @@ public class Renderer {
 		bmp.getData().setScale(0.5f);
 		viewMatrix = new Matrix4();
 		tranMatrix = new Matrix4();
-		camera.setObjectToFollow(gameAction.lixo.getGameObject());
+		camera.setObjectToFollow(gameAction.robot.getGameObject());
 	}
 
 	public void draw(float delta) {
@@ -89,13 +89,13 @@ public class Renderer {
 		}
 		spritebatch.end();
 
-		if (Commands.set[Commands.SHOT]) {
-			camera.setOffsetZ(-2);
-			camera.setOffsetY(1);
-		} else {
-			camera.setOffsetZ(-7);
-			camera.setOffsetY(2);
-		}
+//		if (Commands.set[Commands.SHOT]) {
+//			camera.setOffsetZ(-2);
+//			camera.setOffsetY(1);
+//		} else {
+//			camera.setOffsetZ(-7);
+//			camera.setOffsetY(2);
+//		}
 
 	}
 }
