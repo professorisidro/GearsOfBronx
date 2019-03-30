@@ -31,7 +31,7 @@ public class MeuJogo extends Game implements InputProcessor {
 		// TODO Auto-generated method stub
 		modelBuider = new ModelBuilder();
 		assetManager = new AssetManager();
-		gamePad      = new GamePad(true);
+		gamePad      = new GamePad(false);
 		Gdx.input.setInputProcessor(this);
 
 		assetManager.load("cenario/banco.g3db", Model.class);
@@ -43,6 +43,12 @@ public class MeuJogo extends Game implements InputProcessor {
 		assetManager.load("robot/Robot_death.g3db", Model.class);
 		assetManager.load("robot/Robot_run.g3db", Model.class);
 		assetManager.load("robot/Robot_OneShoot.g3db", Model.class);
+		assetManager.load("orc/Orc_Death.g3db", Model.class);
+		assetManager.load("orc/Orc_idle.g3db", Model.class);
+		assetManager.load("orc/Orc_run.g3db", Model.class);
+		assetManager.load("orc/Orc_shoot.g3db", Model.class);
+		assetManager.load("shot_orc/shot.g3db", Model.class);
+		assetManager.load("shot_robot/shot.g3db", Model.class);
 		
 		
 		currentScreen = new StartScreen("START");

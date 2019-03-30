@@ -111,7 +111,7 @@ public class GameObject extends ModelInstance{
 	public void setVisible(boolean visible) {
 		this.visible = visible;
 	}
-	public boolean isAnimiationFinished() {
+	public boolean isAnimationFinished() {
 		return this.animationFinished;
 	}
 	public void resetAnimation() {
@@ -124,6 +124,7 @@ public class GameObject extends ModelInstance{
 	}
 	public void setAngle(float angle) {
 		this.angle += angle;
+		if (this.angle >= 360) this.angle -= 360;
 	}
 	public BoundingBox getBoundingBox() {
 		return boundingBox;

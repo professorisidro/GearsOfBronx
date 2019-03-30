@@ -33,7 +33,7 @@ public class Robot extends AbstractModel {
 	@Override
 	public void update(float delta) {
 		// TODO Auto-generated method stub
-		if (estado == SHOT && estados[estado].isAnimiationFinished()) {
+		if (estado == SHOT && estados[estado].isAnimationFinished()) {
 			estados[estado].resetAnimation();
 			estado = IDLE;
 		}
@@ -56,7 +56,7 @@ public class Robot extends AbstractModel {
 			estado = RUN;
 		}
 		for (GameObject o : estados) {
-			o.transform.translate(0, 0, 3 * delta);
+			o.transform.translate(0, 0, 1.5f * delta);
 
 		}
 	}
@@ -66,7 +66,7 @@ public class Robot extends AbstractModel {
 			estado = RUN;
 		}
 		for (GameObject o : estados) {
-			o.transform.translate(0, 0, -3 * delta);
+			o.transform.translate(0, 0, -1.5f * delta);
 		}
 	}
 
@@ -99,7 +99,7 @@ public class Robot extends AbstractModel {
 	}
 
 	public boolean isDead() {
-		return (estado == DIE && estados[estado].isAnimiationFinished());
+		return (estado == DIE && estados[estado].isAnimationFinished());
 	}
 
 	@Override

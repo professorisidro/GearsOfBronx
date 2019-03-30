@@ -14,5 +14,9 @@ public class Utilities {
 		
 		return pos;
 	}
+	
+	public static float getAngle(Vector3 pos1, Vector3 pos2) {
+		return (float)Math.toDegrees(Math.atan((pos1.x-pos2.x)/(pos1.z-pos2.z)));
+	}
 
 }
