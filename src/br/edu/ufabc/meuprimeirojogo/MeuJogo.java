@@ -1,16 +1,18 @@
 package br.edu.ufabc.meuprimeirojogo;
 
 
-import javax.swing.plaf.synth.SynthSeparatorUI;
-
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver;
 import com.badlogic.gdx.graphics.g3d.Model;
+import com.badlogic.gdx.graphics.g3d.particles.ParticleEffect;
+import com.badlogic.gdx.graphics.g3d.particles.ParticleEffectLoader;
+import com.badlogic.gdx.graphics.g3d.particles.ParticleSystem;
+import com.badlogic.gdx.graphics.g3d.particles.batches.BillboardParticleBatch;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
-import com.badlogic.gdx.math.Vector3;
 
 import br.edu.ufabc.meuprimeirojogo.screen.GameScreen;
 import br.edu.ufabc.meuprimeirojogo.screen.MyScreen;
@@ -25,6 +27,8 @@ public class MeuJogo extends Game implements InputProcessor {
 	public static ModelBuilder modelBuider;
 	public static boolean DEBUG = false;
 	public static GamePad gamePad;
+	public static ParticleSystem particleSystem;
+	public static BillboardParticleBatch particleBatch;
 
 	@Override
 	public void create() {
@@ -32,6 +36,7 @@ public class MeuJogo extends Game implements InputProcessor {
 		modelBuider = new ModelBuilder();
 		assetManager = new AssetManager();
 		gamePad      = new GamePad(false);
+		particleSystem = new ParticleSystem();
 		Gdx.input.setInputProcessor(this);
 
 		assetManager.load("cenario/banco.g3db", Model.class);
@@ -50,6 +55,17 @@ public class MeuJogo extends Game implements InputProcessor {
 		assetManager.load("shot_orc/shot.g3db", Model.class);
 		assetManager.load("shot_robot/shot.g3db", Model.class);
 		
+		
+		ParticleEffectLoader.ParticleEffectLoadParameter loadParam;
+		loadParam = new ParticleEffectLoader.ParticleEffectLoadParameter(particleSystem.getBatches());
+		ParticleEffectLoader loader = new ParticleEffectLoader(new InternalFileHandleResolver());
+		
+		assetManager.setLoader(ParticleEffect.class, loader);
+		
+		assetManager.load("particulas/particula.p", ParticleEffect.class, loadParam);
+		
+		particleBatch = new BillboardParticleBatch();
+		particleSystem.add(particleBatch);
 		
 		currentScreen = new StartScreen("START");
 		setScreen(currentScreen);

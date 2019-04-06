@@ -2,7 +2,6 @@ package br.edu.ufabc.meuprimeirojogo.core;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g3d.Environment;
@@ -15,7 +14,7 @@ import com.badlogic.gdx.math.Matrix4;
 import br.edu.ufabc.meuprimeirojogo.Commands;
 import br.edu.ufabc.meuprimeirojogo.MeuJogo;
 import br.edu.ufabc.meuprimeirojogo.model.AbstractModel;
-import br.edu.ufabc.meuprimeirojogo.model.LixoAndante;
+import br.edu.ufabc.meuprimeirojogo.model.Orc;
 import br.edu.ufabc.meuprimeirojogo.model.Poste;
 import br.edu.ufabc.meuprimeirojogo.util.Button;
 import br.edu.ufabc.meuprimeirojogo.util.ChasingCamera;
@@ -60,6 +59,7 @@ public class Renderer {
 		viewMatrix = new Matrix4();
 		tranMatrix = new Matrix4();
 		camera.setObjectToFollow(gameAction.robot.getGameObject());
+		MeuJogo.particleBatch.setCamera(camera);
 	}
 
 	public void draw(float delta) {
@@ -79,6 +79,14 @@ public class Renderer {
 			for (AbstractModel o : gameAction.objects) {
 				modelBatch.render(o.getGameObject().getBoxInstance(), environment);
 			}
+		}
+		if (gameAction.orc.getEstado() == Orc.DIE) {
+			
+			MeuJogo.particleSystem.update(delta/20);
+			MeuJogo.particleSystem.begin();
+			MeuJogo.particleSystem.draw();
+			MeuJogo.particleSystem.end();
+			modelBatch.render(MeuJogo.particleSystem, environment);
 		}
 		modelBatch.end();
 		camera.update();

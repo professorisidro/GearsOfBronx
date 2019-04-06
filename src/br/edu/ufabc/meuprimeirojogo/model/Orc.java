@@ -25,7 +25,7 @@ public class Orc extends AbstractModel {
 		estados[IDLE] = new GameObject((Model) MeuJogo.assetManager.get("orc/Orc_idle.g3db"), true, true, true, 1);
 		estados[RUN] = new GameObject((Model) MeuJogo.assetManager.get("orc/Orc_run.g3db"), true, true, true, 1);
 		estados[SHOT] = new GameObject((Model) MeuJogo.assetManager.get("orc/Orc_shoot.g3db"), true, true, true, 1);
-		estados[DIE] = new GameObject((Model) MeuJogo.assetManager.get("orc/Orc_Death.g3db"), true, true, false, 1);
+		estados[DIE] = new GameObject((Model) MeuJogo.assetManager.get("orc/Orc_Death.g3db"), true, true, false, 0.5f);
 
 		for (GameObject o : estados) {
 			o.transform.scale(2, 2, 2);
@@ -36,14 +36,17 @@ public class Orc extends AbstractModel {
 	public void update(float delta) {
 		// TODO Auto-generated method stub
 		
-//		for (GameObject o : estados) {
-//			o.update(delta);
-//		}
 		estados[estado].update(delta);
 		
 		if (estado == IDLE) {
 			time -= delta;
 			if (time < 0) time = 0;
+		}
+		if (estado == DIE) {
+			if (estados[estado].isAnimationFinished()) {
+				estados[estado].resetAnimation();
+				destroy();
+			}
 		}
 		if (estado == RUN) {
 			for (GameObject o : estados) {
@@ -54,7 +57,6 @@ public class Orc extends AbstractModel {
 					&& getGameObject().getAngle() <= angleDestination + 1) {
 				estado = SHOT;
 				enableShot = true;
-				
 				setAngleDestination(0);
 			}
 			
@@ -70,6 +72,12 @@ public class Orc extends AbstractModel {
 		}
 
 	}
+	
+	public void destroy() {
+		for (GameObject o: estados) {
+			o.setVisible(false);
+		}
+	}
 
 	public void rotateToRobot(float angle) {
 		if (estado == IDLE && time == 0) {
@@ -82,6 +90,9 @@ public class Orc extends AbstractModel {
 		estado = IDLE;
 	}
 
+	public void die() {
+		estado = DIE;
+	}
 	public int getEstado() {
 		return this.estado;
 	}

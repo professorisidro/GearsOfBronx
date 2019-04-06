@@ -10,13 +10,13 @@ import com.badlogic.gdx.math.Vector3;
 import br.edu.ufabc.meuprimeirojogo.MeuJogo;
 import br.edu.ufabc.meuprimeirojogo.core.GameObject;
 
-public class ShotOrc extends AbstractModel{
+public class ShotRobot extends AbstractModel{
 
 	private GameObject shot;
 	private float      speed = 10f;
-	public ShotOrc(Vector3 position){
+	public ShotRobot(Vector3 position){
 		super(true,true);
-		shot = new GameObject(MeuJogo.modelBuider.createSphere(0.1f, 0.1f, 0.1f, 10, 10, new Material(ColorAttribute.createDiffuse(Color.RED)), Usage.Position | Usage.Normal));
+		shot = new GameObject(MeuJogo.modelBuider.createSphere(0.2f, 0.2f, 0.2f, 10, 10, new Material(ColorAttribute.createDiffuse(Color.YELLOW)), Usage.Position | Usage.Normal));
 		position.y = 1f;
 		shot.transform.translate(position);		
 	}

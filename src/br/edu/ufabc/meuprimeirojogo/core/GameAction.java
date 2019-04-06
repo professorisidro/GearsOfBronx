@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.model.Node;
+import com.badlogic.gdx.graphics.g3d.particles.ParticleEffect;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 
@@ -16,6 +17,7 @@ import br.edu.ufabc.meuprimeirojogo.model.Orc;
 import br.edu.ufabc.meuprimeirojogo.model.Poste;
 import br.edu.ufabc.meuprimeirojogo.model.Robot;
 import br.edu.ufabc.meuprimeirojogo.model.ShotOrc;
+import br.edu.ufabc.meuprimeirojogo.model.ShotRobot;
 import br.edu.ufabc.meuprimeirojogo.util.Utilities;
 
 public class GameAction {
@@ -24,12 +26,15 @@ public class GameAction {
 	protected Robot robot;
 	protected Orc orc;
 	protected String strMsg;
+	protected ParticleEffect effect;
 
 	public GameAction() {
 		objects = new Array<AbstractModel>();
 		// vou carregar os modelos aqui (inicialmente)
 //		
 
+		effect = MeuJogo.assetManager.get("particulas/particula.p", ParticleEffect.class).copy();
+		
 		objects.add(new Chao());
 		int mode = 0;
 
@@ -107,10 +112,18 @@ public class GameAction {
 		}
 		if (Commands.set[Commands.SHOT]) {
 			robot.shoot();
+			Vector3 posRobot = new Vector3();
+			robot.getGameObject().transform.getTranslation(posRobot);
+			posRobot.y = 1.2f;
+			ShotRobot shot = new ShotRobot(posRobot);
+			shot.rotateToAngle(robot.getGameObject().getAngle());
+			objects.add(shot);
+			Commands.set[Commands.SHOT] = false;
 		}
 
 		Vector3 posRobo = new Vector3();
 		Vector3 posOrc = new Vector3();
+		Vector3 posShot = new Vector3();
 
 		robot.getGameObject().transform.getTranslation(posRobo);
 		orc.getGameObject().transform.getTranslation(posOrc);
@@ -119,19 +132,22 @@ public class GameAction {
 		float dstAngle = Utilities.getAngle(posRobo, posOrc);
 		strMsg = " Dist = " + String.format("%.2f", dst) + " ORC = " + String.format("%.2f", angle) + " ANG = "
 				+ String.format("%.2f", dstAngle);
-		if (dst <= 10.0f) {
-			
-			orc.rotateToRobot(dstAngle);
-			if (orc.isEnableShot()) {
-				ShotOrc shot = new ShotOrc(posOrc);
-				shot.rotateToAngle(dstAngle);
-				objects.add(shot);
-				orc.setEnableShot(false);
-			}
-		}
-		else {
-			orc.goIdle();
-		}
+//		if (dst <= 10.0f) {
+//			
+//			orc.rotateToRobot(dstAngle);
+//			if (orc.isEnableShot()) {
+//				ShotOrc shot = new ShotOrc(posOrc);
+//				shot.rotateToAngle(dstAngle);
+//				objects.add(shot);
+//				orc.setEnableShot(false);
+//			}
+//		}
+//		else {
+//			if (orc.getEstado() != orc.DIE)
+//			   orc.goIdle();
+//		}
+		
+		
 
 		for (AbstractModel m : objects) {
 
@@ -144,6 +160,24 @@ public class GameAction {
 //					//System.out.println("");
 //					colidiu = "Colisao";
 //				}
+			}
+			if (m instanceof ShotRobot) {
+				m.getGameObject().transform.getTranslation(posShot);
+			    orc.getGameObject().transform.getTranslation(posOrc);
+			    if (posShot.dst(posOrc) <= 1.5f) {
+			    	if (orc.getEstado() != Orc.DIE) {
+			    		effect.translate(posOrc);
+			    		effect.init();
+				    	effect.start();
+			    	}
+			    	orc.die();
+			    	
+			    	effect.update(delta);
+			    	MeuJogo.particleSystem.add(effect);
+			    	
+			    }
+				
+				
 			}
 		}
 	}
